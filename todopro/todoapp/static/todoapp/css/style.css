@@ -1,0 +1,10 @@
+body{
+    background-color: white;
+}
+h2{
+    margin-bottom: 20px;
+}
+.card{
+    max-width: 500px;
+    margin: auto;
+}

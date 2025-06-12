@@ -1,0 +1,25 @@
+{% extends 'todoapp/base.html' %}
+{% block content %}
+<h2>Your Tasks</h2>
+
+<form method="get" class="mb-3 d-flex align-items-center gap-2">
+    <label class="form-label mb-0">Filter by date:</label>
+    <input type="date" name="date" class="form-control w-auto" value="{{ request.GET.date }}">
+    <button class="btn btn-info">Filter</button>
+</form>
+
+<ul class="list-group">
+    {% for task in tasks %}
+    <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <strong>{{ task.title }}</strong><br>
+            {{ task.start_date }} → {{ task.end_date }}<br>
+            <small>{{ task.description }}</small>
+        </div>
+        <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-danger">Delete</a>
+    </li>
+    {% empty %}
+    <li class="list-group-item text-muted">No tasks for this day.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
