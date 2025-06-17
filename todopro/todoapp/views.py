@@ -4,6 +4,8 @@ from .forms import RegistrationForm, LoginForm, TaskForm
 from .models import Task
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 
 def register(request):
     if request.method == "POST":
@@ -37,12 +39,7 @@ def user_logout(request):
 
 @login_required
 def task_list(request):
-    date_filter = request.GET.get('date')
-    if date_filter:
-        date = datetime.strptime(date_filter, '%Y-%m-%d').date()
-        tasks = Task.objects.filter(user=request.user, start_date_lte=date, end_date_gte=date)
-    else:
-        tasks = Task.objects.filter(user=request.user)
+    tasks = Task.objects.filter(user=request.user)
     return render(request, 'todoapp/task_list.html', {'tasks': tasks})
 
 @login_required
@@ -61,4 +58,20 @@ def add_task(request):
 @login_required
 def delete_task(request, task_id):
     Task.objects.get(id=task_id, user=request.user).delete()
+    return redirect('task_list')
+
+@login_required
+@csrf_exempt
+def update_task(request,task_id):
+    task=Task.objects.get(id=task_id,user=request.user)
+    if request.method=='POST':
+        end_date=request.POST.get('end_date')
+        completed=request.POST.get('completed')=='on'
+        if end_date:
+            try:
+                task.end_date=datetime.strptime(end_date,'%y-%m-%d').date()
+            except ValueError:
+                pass
+        task.completed=completed
+        task.save()
     return redirect('task_list')

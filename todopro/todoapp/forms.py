@@ -13,6 +13,7 @@ class LoginForm(forms.Form):
     password=forms.CharField(widget=forms.PasswordInput)
     
 class TaskForm(forms.ModelForm):
+    completed=forms.BooleanField(required=False)
     class Meta:
         model=Task
-        fields=['title','description','start_date','end_date']
+        fields=['title','description','start_date','end_date','completed']
